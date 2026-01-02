@@ -12,8 +12,8 @@ export class Api extends Effect.Service<Api>()("Api", {
     );
 
     return {
-      getPosts: client.get("/posts"),
-      getPostById: (id: string) => client.get(`/posts/${id}`),
+      getPosts: () => client.get("/posts"),
+      getPostById: (id: number) => client.get(`/posts/${id}`),
     };
   }),
 }) {}
