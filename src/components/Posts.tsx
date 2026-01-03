@@ -41,7 +41,7 @@ const SinglePost = ({ post, checked, onChecked }: { post: PostE; checked: boolea
     <div>
       <h1>{post.title}</h1>
       <p>{post.body}</p>
-      <button type="button" disabled={pending} className="bg-blue-950 p-4 text-white disabled:opacity-50" onClick={() => startTransition(setLiked)}>
+      <button type="button" disabled={pending} className="bg-blue-950 p-4 text-white disabled:opacity-50" onClick={setLiked}>
         Like
       </button>
       {/* 👇 Display error if any */}
