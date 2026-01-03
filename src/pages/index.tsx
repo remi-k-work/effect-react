@@ -1,31 +1,36 @@
-import { Link } from "waku";
-import { Counter } from "../components/counter";
+import { Effect, Match, Schema } from "effect";
+import { Api } from "../services/Api";
+import { RuntimeServer } from "../services/RuntimeServer";
+
+import Posts from "../components/Posts";
+import { Post } from "../services/schema";
+
+const main = Effect.gen(function* () {
+  const api = yield* Api;
+
+  const posts = yield* api.getPosts();
+  return yield* Schema.encode(Post.Array)(posts);
+});
 
 export default async function HomePage() {
-  const data = await getData();
-
   return (
-    <div>
-      <title>{data.title}</title>
-      <h1 className="text-4xl font-bold tracking-tight">{data.headline}</h1>
-      <p>{data.body}</p>
-      <Counter />
-      <Link to="/about" className="mt-4 inline-block underline">
-        About page
-      </Link>
-    </div>
+    <>
+      <title>Index</title>
+      {await RuntimeServer.runPromise(
+        main.pipe(
+          Effect.match({
+            onFailure: Match.valueTags({
+              ParseError: (error) => <span>ParseError</span>,
+              RequestError: (error) => <span>RequestError</span>,
+              ResponseError: (error) => <span>ResponseError</span>,
+            }),
+            onSuccess: (posts) => <Posts posts={posts} />,
+          }),
+        ),
+      )}
+    </>
   );
 }
-
-const getData = async () => {
-  const data = {
-    title: "Waku",
-    headline: "Waku",
-    body: "Hello world!",
-  };
-
-  return data;
-};
 
 export const getConfig = async () => {
   return {
