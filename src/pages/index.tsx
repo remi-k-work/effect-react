@@ -4,6 +4,8 @@ import { RuntimeServer } from "../services/RuntimeServer";
 
 import Posts from "../components/Posts";
 import { Post } from "../services/schema";
+import Location from "../components/Location";
+import Form from "../components/Form";
 
 const main = Effect.gen(function* () {
   const api = yield* Api;
@@ -16,6 +18,8 @@ export default async function HomePage() {
   return (
     <>
       <title>Index</title>
+      <Location />
+      <Form />
       {await RuntimeServer.runPromise(
         main.pipe(
           Effect.match({
